@@ -1,0 +1,140 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Stat Cards -->
+<div class="stat-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon orange"><i class="bi bi-box-seam"></i></div>
+        <div>
+            <div class="stat-value">@ViewData["totalProducts"]</div>
+            <div class="stat-label">Total Products</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="bi bi-cart-check"></i></div>
+        <div>
+            <div class="stat-value">@ViewData["totalOrders"]</div>
+            <div class="stat-label">Total Orders</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="bi bi-people"></i></div>
+        <div>
+            <div class="stat-value">@ViewData["totalUsers"]</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="bi bi-currency-dollar"></i></div>
+        <div>
+            <div class="stat-value">@(((decimal)ViewData["totalRevenue"]).ToString("N0")) <small style="font-size:.9rem;font-weight:600;">SR</small></div>
+            <div class="stat-label">Total Revenue</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Charts Row -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;">
+
+    <!-- Inventory Pie Chart -->
+    <div class="admin-card">
+        <h6 style="font-weight:700;color:#1a1a2e;margin-bottom:16px;">
+            <i class="bi bi-pie-chart-fill me-2" style="color:#ff6b00;"></i>Inventory by Category
+        </h6>
+        <div id="pie_chart" style="width:100%;height:280px;"></div>
+    </div>
+
+    <!-- Category Breakdown Table -->
+    <div class="admin-card">
+        <h6 style="font-weight:700;color:#1a1a2e;margin-bottom:16px;">
+            <i class="bi bi-bar-chart-fill me-2" style="color:#ff6b00;"></i>Category Breakdown
+        </h6>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th style="text-align:right;">Products</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="role-badge" style="background:rgba(255,107,0,.1);color:#e05e00;">Protein Powder</span></td>
+                    <td style="text-align:right;font-weight:600;">@ViewData["d1"]</td>
+                </tr>
+                <tr>
+                    <td><span class="role-badge" style="background:rgba(21,101,192,.1);color:#1565c0;">Pre-Workout</span></td>
+                    <td style="text-align:right;font-weight:600;">@ViewData["d2"]</td>
+                </tr>
+                <tr>
+                    <td><span class="role-badge" style="background:rgba(27,153,80,.1);color:#1b9950;">Creatine</span></td>
+                    <td style="text-align:right;font-weight:600;">@ViewData["d3"]</td>
+                </tr>
+                <tr>
+                    <td><span class="role-badge" style="background:rgba(103,58,183,.1);color:#673ab7;">Snack</span></td>
+                    <td style="text-align:right;font-weight:600;">@ViewData["d4"]</td>
+                </tr>
+                <tr>
+                    <td><span class="role-badge" style="background:rgba(0,150,136,.1);color:#00796b;">Vitamins</span></td>
+                    <td style="text-align:right;font-weight:600;">@ViewData["d5"]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- Quick Actions -->
+<div class="admin-card" style="margin-top:4px;">
+    <h6 style="font-weight:700;color:#1a1a2e;margin-bottom:16px;">
+        <i class="bi bi-lightning-charge-fill me-2" style="color:#ff6b00;"></i>Quick Actions
+    </h6>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;">
+        <a asp-controller="items" asp-action="Create" class="btn-admin-primary">
+            <i class="bi bi-plus-circle"></i> Add Product
+        </a>
+        <a asp-controller="useraccounts" asp-action="AddAdmin" class="btn-admin-primary" style="background:#1565c0;">
+            <i class="bi bi-person-plus"></i> Add Admin
+        </a>
+        <a asp-controller="useraccounts" asp-action="email" class="btn-admin-primary" style="background:#673ab7;">
+            <i class="bi bi-envelope"></i> Send Email
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Category');
+            data.addColumn('number', 'Count');
+            data.addRows([
+                ['Protein Powder', @ViewData["d1"]],
+                ['Pre-Workout',    @ViewData["d2"]],
+                ['Creatine',       @ViewData["d3"]],
+                ['Snack',          @ViewData["d4"]],
+                ['Vitamins',       @ViewData["d5"]]
+            ]);
+
+            var options = {
+                legend: { position: 'bottom' },
+                colors: ['#ff6b00', '#1565c0', '#1b9950', '#673ab7', '#00796b'],
+                chartArea: { width: '85%', height: '78%' },
+                backgroundColor: 'transparent',
+                pieHole: 0.4
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+            chart.draw(data, options);
+        }
+    </script>
+}

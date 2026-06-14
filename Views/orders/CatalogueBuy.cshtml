@@ -1,0 +1,64 @@
+@model IEnumerable<project_web2.Models.Products>
+@{
+    ViewData["Title"] = "Shop — Energizer Sport";
+    Layout = "~/Views/Shared/layoutCustomer.cshtml";
+    ViewData["BodyClass"] = "catalogue-page";
+    var isLoggedIn = Context.Session.GetString("Role") != null;
+}
+
+<section class="catalogue-hero">
+    <div class="container-xl px-4">
+        <h1 class="hero-title">Fuel Your <span>Performance</span></h1>
+        <p class="hero-sub">Premium supplements engineered to help you train harder, recover faster, and reach your goals.</p>
+        <a href="#products" class="btn-hero">
+            <i class="bi bi-arrow-down me-1"></i>Shop Now
+        </a>
+    </div>
+</section>
+
+<section id="products" class="container-xl px-4 py-5">
+    <h2 class="section-heading">Our Products</h2>
+    <div class="section-underline"></div>
+
+    <div class="product-grid">
+        @foreach (var item in Model)
+        {
+            <div class="product-card">
+                @if (item.Discount > 0)
+                {
+                    <span class="discount-badge"><i class="bi bi-tag-fill me-1"></i>Sale</span>
+                }
+                <div class="product-img-wrapper">
+                    <img src="~/images/@item.ImageFile" alt="@item.Name" class="product-img" />
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">@item.Name</h3>
+                    <span class="product-price">@item.Price <small>SR</small></span>
+                    @if (item.Discount > 0)
+                    {
+                        <span class="product-discount-note"><i class="bi bi-check-circle-fill me-1"></i>Discount available</span>
+                    }
+                </div>
+                <div class="product-actions">
+                    <a asp-action="itemsBuyDetail" asp-route-id="@item.Id" class="btn-view-detail">
+                        <i class="bi bi-eye me-1"></i>Details
+                    </a>
+                    @if (isLoggedIn)
+                    {
+                        <a asp-action="itemsBuyDetail" asp-route-id="@item.Id" class="btn-add-cart">
+                            <i class="bi bi-cart-plus me-1"></i>Add to Cart
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Login" asp-controller="useraccounts"
+                           asp-route-returnUrl="/orders/itemsBuyDetail/@item.Id"
+                           class="btn-add-cart btn-guest-cart" title="Login to purchase">
+                            <i class="bi bi-lock-fill me-1"></i>Login to Add
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>

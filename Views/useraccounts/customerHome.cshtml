@@ -1,0 +1,58 @@
+@model IEnumerable<project_web2.Models.Products>
+
+@{
+    ViewData["Title"] = "Special Offers";
+    Layout = "~/Views/Shared/layoutCustomer.cshtml";
+}
+
+<section class="py-5">
+    <div class="container-xl">
+        <div class="text-center mb-5">
+            <h1 class="section-heading">Special Offers</h1>
+            <div class="section-underline mx-auto"></div>
+            <p style="color:#aaa;margin-top:14px;font-size:.95rem;">
+                Exclusive member deals — save big on top-rated supplements.
+            </p>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center" style="padding:60px 0;color:#aaa;">
+                <i class="bi bi-tag-fill" style="font-size:3rem;display:block;margin-bottom:16px;color:#ff6b00;"></i>
+                No special offers available right now. Check back soon!
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var item in Model)
+                {
+                    var discountPct = (int)item.Discount;
+                    var finalPrice = item.Price * (1 - item.Discount / 100m);
+                    <div class="col-sm-6 col-lg-4 col-xl-3">
+                        <div class="product-card position-relative">
+                            @if (discountPct > 0)
+                            {
+                                <div class="discount-badge">@discountPct% OFF</div>
+                            }
+                            <div class="product-img-wrapper">
+                                <img src="~/images/@item.ImageFile" alt="@item.Name" class="product-img" />
+                            </div>
+                            <div class="product-info">
+                                <div class="product-name">@item.Name</div>
+                                <div class="product-price" style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                    <span style="color:#ff6b00;font-weight:700;font-size:1.1rem;">$@finalPrice.ToString("F2")</span>
+                                    <span style="text-decoration:line-through;color:#666;font-size:.85rem;">$@item.Price.ToString("F2")</span>
+                                </div>
+                                <a asp-controller="orders" asp-action="itemsBuyDetail" asp-route-id="@item.Id"
+                                   class="btn-nav-primary" style="display:block;text-align:center;margin-top:14px;text-decoration:none;">
+                                    Buy Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

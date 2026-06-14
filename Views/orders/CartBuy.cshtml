@@ -1,0 +1,81 @@
+@model IEnumerable<buyitems>
+@{
+    ViewData["Title"] = "My Cart";
+    Layout = "~/Views/Shared/layoutCustomer.cshtml";
+    ViewData["BodyClass"] = "cart-page";
+    var items = Model.ToList();
+    var total = items.Sum(x => x.Price * x.quant);
+}
+
+<div class="container-xl px-4">
+
+    <h2 class="cart-heading">My Cart</h2>
+    <div class="section-underline"></div>
+
+    @if (!items.Any())
+    {
+        <div class="cart-layout">
+            <div class="empty-cart">
+                <div class="empty-cart-icon"><i class="bi bi-cart-x"></i></div>
+                <h3>Your cart is empty</h3>
+                <p>Looks like you haven't added anything yet.</p>
+                <a asp-action="CatalogueBuy" asp-controller="orders" class="btn-shop-now">
+                    <i class="bi bi-bag me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="cart-layout">
+
+            <div class="cart-table-wrapper">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Unit Price</th>
+                            <th>Qty</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in items)
+                        {
+                            <tr>
+                                <td class="cart-item-name">@item.name</td>
+                                <td>@item.Price.ToString("F2") SR</td>
+                                <td>@item.quant</td>
+                                <td class="cart-item-sub">@((item.Price * item.quant).ToString("F2")) SR</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cart-summary-box">
+                <div class="summary-title">Order Summary</div>
+
+                <div class="summary-row">
+                    <span class="s-label">Items (@items.Count)</span>
+                    <span class="s-value">@total.ToString("F2") SR</span>
+                </div>
+
+                <div class="summary-total">
+                    <span class="s-label">Total</span>
+                    <span class="s-value">@total.ToString("F2") SR</span>
+                </div>
+
+                <a asp-action="Buy" asp-controller="orders" class="btn-checkout">
+                    <i class="bi bi-bag-check me-2"></i>Proceed to Checkout
+                </a>
+
+                <a asp-action="CatalogueBuy" asp-controller="orders" class="btn-continue-shopping">
+                    <i class="bi bi-arrow-left me-1"></i>Continue Shopping
+                </a>
+            </div>
+
+        </div>
+    }
+
+</div>

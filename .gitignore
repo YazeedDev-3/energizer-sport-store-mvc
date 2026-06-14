@@ -1,0 +1,21 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+
+# Keep DB and images (intentionally tracked)
+!App_Data/DB-PROJECT.mdf
+!App_Data/DB-PROJECT_log.ldf
+!wwwroot/images/

@@ -1,0 +1,59 @@
+@model project_web2.Models.Users
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div style="max-width:480px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+            <div class="admin-page-title">Edit User</div>
+            <div class="admin-page-sub">Update account for <strong>@Model.Username</strong></div>
+        </div>
+        <a asp-action="Index" class="btn-admin-sm btn-view">
+            <i class="bi bi-arrow-left"></i> Back to Users
+        </a>
+    </div>
+
+    <div class="admin-card">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" style="color:#c62828;background:#fdecea;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:.85rem;"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="admin-form-group">
+                <label asp-for="Username">Username</label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" style="color:#c62828;font-size:.78rem;"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="PasswordHash">New Password</label>
+                <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Enter new password" />
+                <div style="font-size:.75rem;color:#999;margin-top:4px;">This will overwrite the current password hash.</div>
+                <span asp-validation-for="PasswordHash" style="color:#c62828;font-size:.78rem;"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="Role">Role</label>
+                <select asp-for="Role" class="form-control">
+                    <option value="admin">Admin</option>
+                    <option value="customer">Customer</option>
+                </select>
+                <span asp-validation-for="Role" style="color:#c62828;font-size:.78rem;"></span>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button type="submit" class="btn-admin-primary">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="btn-admin-sm btn-view" style="padding:9px 18px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

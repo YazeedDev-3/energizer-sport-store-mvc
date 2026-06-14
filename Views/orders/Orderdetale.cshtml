@@ -1,0 +1,64 @@
+@model IEnumerable<project_web2.Models.Orders>
+
+@{
+    ViewData["Title"] = "Order History";
+    var custname = ViewBag.custname as string ?? "Customer";
+}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+        <div class="admin-page-title">Orders for @custname</div>
+        <div class="admin-page-sub">Full order history for this customer</div>
+    </div>
+    <a asp-action="Index" class="btn-admin-sm btn-view">
+        <i class="bi bi-arrow-left"></i> Back to Report
+    </a>
+</div>
+
+<div class="admin-card" style="padding:0;overflow:hidden;">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th style="text-align:right;">Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="font-weight:700;color:#1a1a2e;">#@item.Id</td>
+                    <td style="color:#555;">@item.OrderDate.ToString("dd MMM yyyy")</td>
+                    <td style="font-weight:700;color:#1b9950;">@item.Total.ToString("N2") SR</td>
+                    <td style="text-align:right;">
+                        <a asp-action="Orderline" asp-route-orid="@item.Id" class="btn-admin-sm btn-view">
+                            <i class="bi bi-list-ul"></i> View Items
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!Model.Any())
+    {
+        <div style="text-align:center;padding:40px;color:#aaa;">
+            <i class="bi bi-cart-x" style="font-size:2rem;display:block;margin-bottom:10px;"></i>
+            No orders found for this customer.
+        </div>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <div class="admin-card" style="margin-top:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:.875rem;color:#888;font-weight:600;">Customer Total — @Model.Count() order(s)</span>
+            <span style="font-size:1.15rem;font-weight:800;color:#1a1a2e;">
+                @Model.Sum(o => o.Total).ToString("N2") SR
+            </span>
+        </div>
+    </div>
+}

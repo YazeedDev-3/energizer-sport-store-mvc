@@ -1,0 +1,46 @@
+@model project_web2.Models.Users
+
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<div style="max-width:480px;">
+    <div class="admin-page-title" style="margin-bottom:4px;">Delete User</div>
+    <div class="admin-page-sub">This action cannot be undone.</div>
+
+    <div class="admin-card" style="border-top:4px solid #c62828;">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+            <div style="width:52px;height:52px;border-radius:50%;background:@(Model.Role=="admin"?"rgba(255,107,0,.15)":"rgba(21,101,192,.12)");display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.2rem;color:@(Model.Role=="admin"?"#e05e00":"#1565c0");flex-shrink:0;">
+                @Model.Username[0].ToString().ToUpper()
+            </div>
+            <div>
+                <div style="font-size:1.05rem;font-weight:700;color:#1a1a2e;">@Model.Username</div>
+                @if (Model.Role == "admin")
+                {
+                    <span class="role-badge role-admin"><i class="bi bi-shield-check me-1"></i>Admin</span>
+                }
+                else
+                {
+                    <span class="role-badge role-customer"><i class="bi bi-person me-1"></i>Customer</span>
+                }
+            </div>
+        </div>
+
+        <div style="background:#fdecea;border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:24px;font-size:.875rem;color:#c62828;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Are you sure you want to permanently delete <strong>@Model.Username</strong>?
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div style="display:flex;gap:12px;">
+                <button type="submit" class="btn-admin-primary" style="background:#c62828;">
+                    <i class="bi bi-trash"></i> Yes, Delete
+                </button>
+                <a asp-action="Index" class="btn-admin-sm btn-view" style="padding:9px 18px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

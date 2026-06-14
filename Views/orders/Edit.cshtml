@@ -1,0 +1,51 @@
+@model project_web2.Models.Orders
+
+@{
+    ViewData["Title"] = "Edit Order";
+}
+
+<div style="max-width:480px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+            <div class="admin-page-title">Edit Order</div>
+            <div class="admin-page-sub">Order #@Model.Id</div>
+        </div>
+        <a asp-action="Index" class="btn-admin-sm btn-view">
+            <i class="bi bi-arrow-left"></i> Back to Report
+        </a>
+    </div>
+
+    <div class="admin-card">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" style="color:#c62828;background:#fdecea;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:.85rem;"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="admin-form-group">
+                <label asp-for="UserId">User ID</label>
+                <input asp-for="UserId" class="form-control" type="number" />
+                <span asp-validation-for="UserId" style="color:#c62828;font-size:.78rem;"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="OrderDate">Order Date</label>
+                <input asp-for="OrderDate" class="form-control" type="date" />
+                <span asp-validation-for="OrderDate" style="color:#c62828;font-size:.78rem;"></span>
+            </div>
+
+            <div class="admin-form-group">
+                <label asp-for="Total">Total (SR)</label>
+                <input asp-for="Total" class="form-control" type="number" step="0.01" min="0" />
+                <span asp-validation-for="Total" style="color:#c62828;font-size:.78rem;"></span>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:8px;">
+                <button type="submit" class="btn-admin-primary">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="btn-admin-sm btn-view" style="padding:9px 18px;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

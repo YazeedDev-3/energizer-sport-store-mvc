@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Add Admin";
+}
+
+<div style="max-width:480px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+            <div class="admin-page-title">Add Admin</div>
+            <div class="admin-page-sub">Create a new admin account</div>
+        </div>
+        <a asp-action="Index" class="btn-admin-sm btn-view">
+            <i class="bi bi-arrow-left"></i> Back to Users
+        </a>
+    </div>
+
+    <div class="admin-card">
+        @if (ViewData["Message"] != null)
+        {
+            var msg = ViewData["Message"]?.ToString() ?? "";
+            var isSuccess = msg.Contains("success");
+            <div style="background:@(isSuccess?"rgba(27,153,80,.1)":"#fdecea");color:@(isSuccess?"#1b9950":"#c62828");border-radius:8px;padding:11px 16px;display:flex;align-items:center;gap:8px;margin-bottom:18px;font-size:.875rem;font-weight:500;">
+                <i class="bi bi-@(isSuccess?"check-circle":"exclamation-triangle")-fill"></i>
+                @msg
+            </div>
+        }
+
+        <form asp-action="AddAdmin" method="post">
+            <div class="admin-form-group">
+                <label for="name">Username</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter username" required />
+            </div>
+            <div class="admin-form-group">
+                <label for="pass">Password</label>
+                <input type="password" class="form-control" id="pass" name="pass" placeholder="Enter password" required />
+            </div>
+            <div class="admin-form-group">
+                <label for="confirmPass">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPass" name="confirmPass" placeholder="Repeat password" required />
+            </div>
+
+            <div style="margin-top:8px;">
+                <button type="submit" class="btn-admin-primary" onclick="return validatePassword()">
+                    <i class="bi bi-person-plus"></i> Add Admin
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function validatePassword() {
+        var pass = document.getElementById("pass").value;
+        var confirm = document.getElementById("confirmPass").value;
+        if (pass !== confirm) {
+            alert("Passwords do not match.");
+            return false;
+        }
+        return true;
+    }
+</script>

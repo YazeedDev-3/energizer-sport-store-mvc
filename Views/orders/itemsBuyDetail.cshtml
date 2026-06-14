@@ -1,0 +1,153 @@
+@model project_web2.Models.Products
+@{
+    Layout = "~/Views/Shared/layoutCustomer.cshtml";
+    ViewData["Title"] = Model?.Name ?? "Product Detail";
+    ViewData["BodyClass"] = "item-detail-page";
+    var isLoggedIn = Context.Session.GetString("Role") != null;
+    var categoryName = Model?.CategoryId switch
+    {
+        1 => "Protein Powder",
+        2 => "Pre-Workout",
+        3 => "Creatine",
+        4 => "Snack",
+        5 => "Vitamins",
+        _ => "Supplement"
+    };
+}
+
+<div class="detail-breadcrumb container-xl px-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="orders" asp-action="CatalogueBuy">Catalogue</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">@Model?.Name</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="detail-container container-xl px-4">
+
+    @if (ViewData["Error"] != null)
+    {
+        <div class="alert alert-danger mb-4">@ViewData["Error"]</div>
+    }
+
+    <div class="detail-layout">
+
+        <div class="detail-image-col">
+            <div class="detail-img-wrapper">
+                <img src="~/images/@Model.ImageFile" alt="@Model.Name" class="detail-img" />
+            </div>
+        </div>
+
+        <div class="detail-info-col">
+            <span class="detail-category-badge">@categoryName</span>
+            <h1 class="detail-name">@Model.Name</h1>
+
+            <div class="detail-price-row">
+                <span class="detail-price">@Model.Price <small>SR</small></span>
+                @if (Model.Discount > 0)
+                {
+                    <span class="detail-discount-tag"><i class="bi bi-tag-fill me-1"></i>@Model.Discount% Off</span>
+                }
+            </div>
+
+            <p class="detail-stock">
+                @if (Model.Stock > 0)
+                {
+                    <span class="in-stock"><i class="bi bi-check-circle-fill me-1"></i>In Stock (@Model.Stock available)</span>
+                }
+                else
+                {
+                    <span class="out-of-stock"><i class="bi bi-x-circle-fill me-1"></i>Out of Stock</span>
+                }
+            </p>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p class="detail-description">@Model.Description</p>
+            }
+
+            @if (isLoggedIn)
+            {
+                <form asp-action="cartadd" asp-controller="orders">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <input type="hidden" id="stockQty" value="@Model.Stock" />
+
+                    <label class="qty-label">Quantity</label>
+                    <div class="qty-selector">
+                        <button type="button" class="qty-btn" onclick="changeQty(-1)">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                        <input type="number" name="quantity" id="qu" class="qty-input"
+                               value="1" min="1" max="@Model.Stock"
+                               oninput="getTotalAndValidate()" />
+                        <button type="button" class="qty-btn" onclick="changeQty(1)">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+
+                    <p class="total-preview" id="tot"></p>
+                    <p class="detail-error-msg" id="errorMsg"></p>
+
+                    <button type="submit" class="btn-add-to-cart" id="buyBtn">
+                        <i class="bi bi-cart-plus me-2"></i>Add to Cart
+                    </button>
+                </form>
+            }
+            else
+            {
+                <div class="guest-alert">
+                    <i class="bi bi-lock-fill me-2"></i>
+                    Please <a asp-action="Login" asp-controller="useraccounts"
+                               asp-route-returnUrl="/orders/itemsBuyDetail/@Model.Id">login</a>
+                    to add items to your cart.
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function changeQty(delta) {
+            const input = document.getElementById('qu');
+            const stock = parseInt(document.getElementById('stockQty').value);
+            let val = parseInt(input.value || 1) + delta;
+            if (val < 1) val = 1;
+            if (val > stock) val = stock;
+            input.value = val;
+            getTotalAndValidate();
+        }
+
+        function getTotalAndValidate() {
+            const qty = parseInt(document.getElementById('qu').value);
+            const price = parseFloat('@Model.Price');
+            const stock = parseInt(document.getElementById('stockQty').value);
+            const discountPct = parseFloat('@Model.Discount');
+            const discountMult = discountPct > 0 ? (1 - discountPct / 100) : 1;
+
+            if (!qty || qty < 1) {
+                document.getElementById('tot').innerHTML = '';
+                document.getElementById('errorMsg').innerHTML = 'Please enter a valid quantity.';
+                document.getElementById('buyBtn').disabled = true;
+                return;
+            }
+
+            if (qty > stock) {
+                document.getElementById('errorMsg').innerHTML = 'Quantity exceeds available stock.';
+                document.getElementById('buyBtn').disabled = true;
+            } else {
+                document.getElementById('errorMsg').innerHTML = '';
+                document.getElementById('buyBtn').disabled = false;
+            }
+
+            const total = qty * price * discountMult;
+            document.getElementById('tot').innerHTML = 'Total: ' + total.toFixed(2) + ' SR';
+        }
+
+        getTotalAndValidate();
+    </script>
+}

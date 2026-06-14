@@ -1,0 +1,60 @@
+@model project_web2.Models.Users
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div style="max-width:480px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+            <div class="admin-page-title">User Details</div>
+            <div class="admin-page-sub">ID #@Model.Id</div>
+        </div>
+        <a asp-action="Index" class="btn-admin-sm btn-view">
+            <i class="bi bi-arrow-left"></i> Back to Users
+        </a>
+    </div>
+
+    <div class="admin-card">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid #f0f2f5;">
+            <div style="width:56px;height:56px;border-radius:50%;background:@(Model.Role=="admin"?"rgba(255,107,0,.15)":"rgba(21,101,192,.12)");display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;color:@(Model.Role=="admin"?"#e05e00":"#1565c0");flex-shrink:0;">
+                @Model.Username[0].ToString().ToUpper()
+            </div>
+            <div>
+                <div style="font-size:1.1rem;font-weight:700;color:#1a1a2e;">@Model.Username</div>
+                @if (Model.Role == "admin")
+                {
+                    <span class="role-badge role-admin" style="margin-top:4px;display:inline-block;"><i class="bi bi-shield-check me-1"></i>Admin</span>
+                }
+                else
+                {
+                    <span class="role-badge role-customer" style="margin-top:4px;display:inline-block;"><i class="bi bi-person me-1"></i>Customer</span>
+                }
+            </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:.875rem;margin-bottom:24px;">
+            <div style="display:flex;justify-content:space-between;">
+                <span style="color:#888;font-weight:600;">User ID</span>
+                <span style="color:#1a1a2e;font-weight:600;">#@Model.Id</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+                <span style="color:#888;font-weight:600;">Username</span>
+                <span style="color:#1a1a2e;font-weight:600;">@Model.Username</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+                <span style="color:#888;font-weight:600;">Role</span>
+                <span style="color:#1a1a2e;font-weight:600;">@Model.Role</span>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-admin-sm btn-edit" style="padding:8px 18px;">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-admin-sm btn-delete" style="padding:8px 18px;">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+        </div>
+    </div>
+</div>
